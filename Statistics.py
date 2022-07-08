@@ -1,5 +1,7 @@
+import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup as bsp
 from datetime import datetime
+import os
 import Config
 
 def getMsg(n):
@@ -12,6 +14,10 @@ def getMsg(n):
 		return msgs
 
 def splitMsg(n):
+	yourMsgs = []
+	yourT = []
+	friendMsgs = []
+	friendT = []
 	messages = getMsg(n)
 	for msg in messages:
 		msg = msg.replace("\n", "", 1)
@@ -25,7 +31,7 @@ def splitMsg(n):
 		dateS = dtimeS[0:splitter]
 		timeS = dtimeS[splitter+2:-1]
 		
-		print(dtimeS)
+		#print(dtimeS)
 		d = dtimeS[0:dtimeS.index(" ")]
 		dtimeS = dtimeS.replace(d+" ", "", 1)
 		mRu = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"]
@@ -37,12 +43,43 @@ def splitMsg(n):
 		dtimeS = dtimeS.replace(H+":", "", 1)
 		Min = dtimeS[0:dtimeS.index(":")]
 		dtimeS = dtimeS.replace(Min+":", "", 1)
-		S = dtimeS
+		S = dtimeS[0:2]
 		dtimeDT = datetime(int(y), int(m), int(d), int(H), int(Min), int(S), 0)
 		
-		print(user)
-		print(dtimeDT)
-		print(content)
-		print(msg)
-	
-splitMsg(50)
+		if user == "Вы":
+			yourMsgs.append(content)
+			yourT.append(dtimeDT)
+		else:
+			friendMsgs.append(content)
+			friendT.append(dtimeDT)
+	return(yourMsgs, yourT, friendMsgs, friendT)
+
+yM = []
+yT = []
+fM = []
+fT = []
+for ind in range(len(os.listdir("Messages/" + Config.UID + "/"))):
+	yourMsgs, yourT, friendMsgs, friendT = splitMsg(50*ind)
+	for item in yourMsgs:
+		yM.append(item)
+	for item in yourT:
+		yT.append(item)
+	for item in friendMsgs:
+		fM.append(item)
+	for item in friendT:
+		fT.append(item)
+	print(100 * ind/len(os.listdir("Messages/" + Config.UID + "/")))
+
+
+yT = sorted(yT)
+l = [0]
+d = [yT[0].date()] 
+for i in range(len(yT)):
+	if yT[i].date() == d[-1]:
+		l[-1] = l[-1] + 1
+	else:
+		d.append(yT[i].date())
+		l.append(0)
+
+plt.plot(d, l)
+plt.show()
