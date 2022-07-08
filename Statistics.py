@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup as bsp
+from datetime import datetime
 import Config
 
 def getMsg(n):
@@ -10,8 +11,18 @@ def getMsg(n):
 			msgs.append(item.get_text())	
 		return msgs
 
-def splitMsg():
-	getMsg(n)
+def splitMsg(n):
+	messages = getMsg(n)
+	for msg in messages:
+		msg = msg.replace("\n", "", 1)
+		comma = msg.index(",")
+		user = msg[0:comma]
+		line = msg.index("\n")
+		timeS = msg[comma+2:line]
+		#timeDT = datetime.strptime(timeS, "%Y-%m-%d")
+		content = msg[line+1:-1]
+		print(user)
+		print(timeS)
+		print(content)
 	
-	
-getMsg(50)
+splitMsg(50)
