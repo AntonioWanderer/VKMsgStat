@@ -18,11 +18,31 @@ def splitMsg(n):
 		comma = msg.index(",")
 		user = msg[0:comma]
 		line = msg.index("\n")
-		timeS = msg[comma+2:line]
-		#timeDT = datetime.strptime(timeS, "%Y-%m-%d")
+		dtimeS = msg[comma+2:line+1]
 		content = msg[line+1:-1]
+		
+		splitter = dtimeS.index("в")
+		dateS = dtimeS[0:splitter]
+		timeS = dtimeS[splitter+2:-1]
+		
+		print(dtimeS)
+		d = dtimeS[0:dtimeS.index(" ")]
+		dtimeS = dtimeS.replace(d+" ", "", 1)
+		mRu = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"]
+		m = mRu.index(dtimeS[0:3]) + 1
+		dtimeS = dtimeS[4:-1]
+		y = dtimeS[0:4]
+		dtimeS = dtimeS[7:len(dtimeS)]
+		H = dtimeS[0:dtimeS.index(":")]
+		dtimeS = dtimeS.replace(H+":", "", 1)
+		Min = dtimeS[0:dtimeS.index(":")]
+		dtimeS = dtimeS.replace(Min+":", "", 1)
+		S = dtimeS
+		dtimeDT = datetime(int(y), int(m), int(d), int(H), int(Min), int(S), 0)
+		
 		print(user)
-		print(timeS)
+		print(dtimeDT)
 		print(content)
+		print(msg)
 	
 splitMsg(50)
